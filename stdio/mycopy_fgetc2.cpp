@@ -27,6 +27,14 @@ int main(int argc, char* argv[]){
         return 1;
     }
 
+    /*
+      another kinds fgets
+      success is a kinds not meats
+      fail is EOF error
+
+      int fgets(FILE* stream);
+    */
+
     while((ch = fgetc(fs)) != EOF)
 	fputc(ch, fd);
 

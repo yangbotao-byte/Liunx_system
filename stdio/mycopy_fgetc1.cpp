@@ -45,6 +45,9 @@ int main(int argc, char* argv[]){
 
     fputs return int, kinds is success or fail
     int fputs(buffer, wirt file)
+
+    success is char*
+    
     */
 
     while(fgets(buffer, SIZE, fs) != NULL)
