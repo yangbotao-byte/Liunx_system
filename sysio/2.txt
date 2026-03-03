@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h> 
+
+int main(int argc, char** argv){
+    // 问题1修复：fd改为int类型（匹配open()返回值）
+    int fd;
+
+    if (argc < 2) {
+        fprintf(stderr, "用法：%s <文件名>\n", argv[0]);
+        exit(1);
+    }
+
+    fd = open(argv[1], O_CREAT | O_RDONLY);
+
+    close(fd);  // 关闭文件描述符（避免资源泄漏）
+    exit(0);
+}
