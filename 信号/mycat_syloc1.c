@@ -7,14 +7,18 @@
 #include <unistd.h>
 #include <signal.h>
 
-static volatile int loop = 0;
+static volatile int token = 0;
 
 #define CPS 10
 #define BUFSIZE CPS
+#define BURST 100  // 最大值
 
 static void alarm_handler(){
     alarm(1);
-    loop = 1;
+    token++;
+    if(token > BURST){
+        token = BURST;
+    }
 }
 
 int main(int argc, char **argv)
@@ -48,18 +52,18 @@ int main(int argc, char **argv)
 
 	while(1)
 	{
-		while(!loop)
-			pause();
+		while(token <= 0)
+            pause();
 
-		loop = 0;
+        token--;
 
 		// 1. 从文件读数据到缓冲区
-		len = read(sfd, buf, BUFSIZE);
-		if(len < 0)
+		while((len = read(sfd, buf, BUFSIZE)) < 0)
 		{
 			if(errno == EINTR) continue; // 信号中断，重试读取
 			perror("read()"); break;     // 真正的读取错误
 		}
+
 		if(len == 0) break; // len=0 → 读到文件末尾，退出循环
 
 		// 2. 把缓冲区数据写入屏幕（标准输出）
